@@ -24,6 +24,7 @@ import { Camera } from 'expo-camera';
 
 import * as FaceDetector from 'expo-face-detector';
 import * as tf from '@tensorflow/tfjs';
+//import { bundleResourceIO } from '@tensorflow/tfjs-react-native';
 
 import { AntDesign } from '@expo/vector-icons';
 
@@ -40,49 +41,54 @@ class App extends Component {
     type: Camera.Constants.Type.back,
     faces: [],
     picture: null,
-    model: null,
     hasMask: false
   }
 
   componentWillMount(){
     (async () => {
         const { status } = await Camera.requestPermissionsAsync();
+        //Get permission
         this.setState({hasPermission: status === 'granted'});
-
-        this.setState({model: await tf.loadLayersModel('./json_models/model.json')});
     })();
   }
+
+  // setUpModel = async() => {
+  //   await tf.ready();
+  //   const modelJson = require('./tfjs-models/model.json');
+  //   //const modelWeights = require('./tfjs-models/group1-shard1of1.bin');
+  //   const model = await tf.loadLayersModel('./tfjs-models/model.json');
+  //   console.log(model)
+  // }
 
   getRealTimePicture = async () => {
     if (this.camera) {
       //console.log(this.state.picture)
       //console.log(aizoo);
-      this.setState({picture: await this.camera.takePictureAsync()})
+      const data = await this.camera.takePictureAsync();
+      this.setState({picture: data.uri});
+
     }
   };
 
   // faceAnalysis = async(img) => {
-  //   await faceAnalysisInternal(img, canvasTemp, showBox);
-  //   resultImg.src = canvasTemp.toDataURL();
-  //   resultImg.onload = () => {
-  //       writeToCanvasDownload(resultImg);
-  //       cords = calculateLocationInCanvas(canvas_show.width, 
-  //                                                   canvas_show.height, resultImg.width, resultImg.height);
-  //       // console.log(cords);
-  //       context.clearRect(0, 0, canvas_show.width, canvas_show.height);
-  //       context.drawImage(resultImg , cords[0], cords[1], cords[2], cords[3]);
+  //   //console.log(img.uri)
+  //   console.log(this.model)
+  //   //let results = await this.model.predict(img.uri);
+  //   //await faceAnalysisInternal(img, canvasTemp, showBox);
+  //   //console.log(results);
   //       // })
-  //     }
   // }
 
   onFacesDetected = (obj) => {
+    //Take picture in realtime
     this.getRealTimePicture()
-    // this.faceAnalysis(this.state.picture);
-    //     intervalID = setTimeout(() => {
-    //         this.faceVideoAnalysis(this.state.picture);
-    // });
-    //if(obj.faces[0])console.log(obj.faces[0].noseBasePosition)
+    //Record the face info
     this.setState({ faces: obj.faces });
+    //this.setUpModel();
+    //Analyze the picture
+    //this.faceAnalysis(this.state.picture);
+    //if(obj.faces[0])console.log(obj.faces[0].noseBasePosition)
+    
   }
   
 
