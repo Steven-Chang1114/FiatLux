@@ -14,10 +14,11 @@ On PC
 
 Troubleshoot:
 
-If have a red screen with big ass long error message, I recommend to try these commands, then redo step 3 above:
-Couple of useful commands:
+If have a red screen with big ass long error message, I recommend to try these commands.
+
 1. expo upgrade
 2. npm update
 3. npm install
 
+Then redo expo start.
 
