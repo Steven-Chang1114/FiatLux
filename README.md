@@ -17,8 +17,7 @@ Troubleshoot:
 If have a red screen with big ass long error message, I recommend to try these commands.
 
 1. expo upgrade
-2. npm update
-3. npm install
+2. npm update OR npm install
 
 Then redo expo start.
 
