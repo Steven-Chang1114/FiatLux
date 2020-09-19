@@ -27,6 +27,10 @@ import {
 
 import { Camera } from 'expo-camera';
 
+import { Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons'; 
+
+
 function App() {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
@@ -67,7 +71,9 @@ function App() {
                   : Camera.Constants.Type.back
               );
             }}>
-            <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Flip </Text>
+
+            <AntDesign name="retweet" size={80} style={{marginLeft: 100, width: 100}} color="black" />
+            
           </TouchableOpacity>
         </View>
       </Camera>
