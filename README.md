@@ -10,3 +10,4 @@ On PC
 2. Run: npm install
 3. Run: expo start
 4. You will see a web pops up. Use your camera to scan the QR code at lower-right corner. (aim your camera to it until a window pops up on the top)
+5. Wait till the app opens (first time takes about 1 min)
