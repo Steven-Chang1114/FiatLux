@@ -29,24 +29,14 @@ import { Camera } from 'expo-camera';
 
 import * as FaceDetector from 'expo-face-detector';
 
-import { Ionicons } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons'; 
+import { Ionicons, AntDesign } from '@expo/vector-icons';
 
 
 class App extends Component {
-  // const [hasPermission, setHasPermission] = useState(null);
-  // const [type, setType] = useState(Camera.Constants.Type.back);
-  // const [faces, setFaces] = useState([]);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const { status } = await Camera.requestPermissionsAsync();
-  //     setHasPermission(status === 'granted');
-  //   })();
-  // }, []);
   state = {
     hasPermission: null,
-    type: Camera.Constants.Type.back
+    type: Camera.Constants.Type.back,
+    faces: []
   }
 
   componentWillMount(){
@@ -56,7 +46,42 @@ class App extends Component {
     })();
   }
 
+  onFacesDetected = ({ faces }) => this.setState({ faces });
 
+
+  // handleFacesDetected(obj){
+  //   this.updateFaces(obj)
+  //   console.log(obj);
+  // }
+
+  renderFaces = () => 
+  <View style={styles.facesContainer} pointerEvents="none">
+    {this.state.faces.map(this.renderFace)}
+  </View>
+
+renderFace({ bounds, faceID, rollAngle, yawAngle }) {
+  return (
+    <View
+      key={faceID}
+      transform={[
+        { perspective: 600 },
+        { rotateZ: `${rollAngle.toFixed(0)}deg` },
+        { rotateY: `${yawAngle.toFixed(0)}deg` },
+      ]}
+      style={[
+        styles.face,
+        {
+          ...bounds.size,
+          left: bounds.origin.x,
+          top: bounds.origin.y,
+        },
+      ]}>
+      <Text style={styles.faceText}>ID: {faceID}</Text>
+      <Text style={styles.faceText}>rollAngle: {rollAngle.toFixed(0)}</Text>
+      <Text style={styles.faceText}>yawAngle: {yawAngle.toFixed(0)}</Text>
+    </View>
+  );
+}
 
   render(){
     if (this.state.hasPermission === null) {
@@ -69,6 +94,14 @@ class App extends Component {
         <Camera 
           style={{ flex: 1 }} 
           type={this.state.type}
+          onFacesDetected={this.onFacesDetected}
+          faceDetectorSettings={{
+            mode: FaceDetector.Constants.Mode.fast,
+            detectLandmarks: FaceDetector.Constants.Landmarks.none,
+            runClassifications: FaceDetector.Constants.Classifications.none,
+            minDetectionInterval: 100,
+            tracking: true,
+          }}
           >
           <View
             style={{
@@ -95,7 +128,7 @@ class App extends Component {
             </TouchableOpacity>
           </View>
         </Camera>
-  
+        {this.renderFaces()}
       </View>
     );
   }
@@ -138,6 +171,29 @@ const styles = StyleSheet.create({
     padding: 4,
     paddingRight: 12,
     textAlign: 'right',
+  },
+  facesContainer: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    left: 0,
+    top: 0,
+  },
+  face: {
+    padding: 10,
+    borderWidth: 2,
+    borderRadius: 2,
+    position: 'absolute',
+    borderColor: '#FFD700',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  faceText: {
+    color: '#FFD700',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    margin: 10,
+    backgroundColor: 'transparent',
   },
 });
 
