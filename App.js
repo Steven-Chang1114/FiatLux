@@ -46,7 +46,10 @@ class App extends Component {
     })();
   }
 
-  onFacesDetected = ({ faces }) => this.setState({ faces });
+  onFacesDetected = (obj) => {
+    if(obj.faces[0])console.log(obj.faces[0].noseBasePosition)
+    this.setState({ faces: obj.faces });
+  }
 
 
   // handleFacesDetected(obj){
@@ -59,29 +62,29 @@ class App extends Component {
     {this.state.faces.map(this.renderFace)}
   </View>
 
-renderFace({ bounds, faceID, rollAngle, yawAngle }) {
-  return (
-    <View
-      key={faceID}
-      transform={[
-        { perspective: 600 },
-        { rotateZ: `${rollAngle.toFixed(0)}deg` },
-        { rotateY: `${yawAngle.toFixed(0)}deg` },
-      ]}
-      style={[
-        styles.face,
-        {
-          ...bounds.size,
-          left: bounds.origin.x,
-          top: bounds.origin.y,
-        },
-      ]}>
-      <Text style={styles.faceText}>ID: {faceID}</Text>
-      <Text style={styles.faceText}>rollAngle: {rollAngle.toFixed(0)}</Text>
-      <Text style={styles.faceText}>yawAngle: {yawAngle.toFixed(0)}</Text>
-    </View>
-  );
-}
+  renderFace({ bounds, faceID, rollAngle, yawAngle,leftCheekPosition,leftMouthPosition, noseBasePosition, rightCheekPosition, rightMouthPosition }) {
+    return (
+      <View
+        key={faceID}
+        transform={[
+          { perspective: 600 },
+          { rotateZ: `${rollAngle.toFixed(0)}deg` },
+          { rotateY: `${yawAngle.toFixed(0)}deg` },
+        ]}
+        style={[
+          styles.face,
+          {
+            ...bounds.size,
+            left: bounds.origin.x,
+            top: bounds.origin.y,
+          },
+        ]}>
+        <Text style={styles.faceText}>ID: {faceID}</Text>
+        <Text style={styles.faceText}>rollAngle: {rollAngle.toFixed(0)}</Text>
+        <Text style={styles.faceText}>yawAngle: {yawAngle.toFixed(0)}</Text>
+      </View>
+    );
+  }
 
   render(){
     if (this.state.hasPermission === null) {
@@ -97,8 +100,8 @@ renderFace({ bounds, faceID, rollAngle, yawAngle }) {
           onFacesDetected={this.onFacesDetected}
           faceDetectorSettings={{
             mode: FaceDetector.Constants.Mode.fast,
-            detectLandmarks: FaceDetector.Constants.Landmarks.none,
-            runClassifications: FaceDetector.Constants.Classifications.none,
+            detectLandmarks: FaceDetector.Constants.Landmarks.all,
+            runClassifications: FaceDetector.Constants.Classifications.all,
             minDetectionInterval: 100,
             tracking: true,
           }}
