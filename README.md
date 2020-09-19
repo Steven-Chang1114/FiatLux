@@ -11,3 +11,13 @@ On PC
 3. Run: expo start
 4. You will see a web pops up. Use your camera to scan the QR code at lower-right corner. (aim your camera to it until a window pops up on the top)
 5. Wait till the app opens (first time takes about 1 min)
+
+Troubleshoot:
+
+If have a red screen with big ass long error message, I recommend to try these commands, then redo step 3 above:
+Couple of useful commands:
+1. expo upgrade
+2. npm update
+3. npm install
+
+
