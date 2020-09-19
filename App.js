@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Component } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -27,59 +27,80 @@ import {
 
 import { Camera } from 'expo-camera';
 
+import * as FaceDetector from 'expo-face-detector';
+
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons'; 
 
 
-function App() {
-  const [hasPermission, setHasPermission] = useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
+class App extends Component {
+  // const [hasPermission, setHasPermission] = useState(null);
+  // const [type, setType] = useState(Camera.Constants.Type.back);
+  // const [faces, setFaces] = useState([]);
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   (async () => {
+  //     const { status } = await Camera.requestPermissionsAsync();
+  //     setHasPermission(status === 'granted');
+  //   })();
+  // }, []);
+  state = {
+    hasPermission: null,
+    type: Camera.Constants.Type.back
+  }
+
+  componentWillMount(){
     (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
+        const { status } = await Camera.requestPermissionsAsync();
+        this.setState({hasPermission: status === 'granted'});
     })();
-  }, []);
+  }
 
 
-  if (hasPermission === null) {
-    return <View />;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
-  return (
-    <View style={{ flex: 1 }}>
-      <Camera style={{ flex: 1 }} type={type}>
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: 'transparent',
-            flexDirection: 'row',
-          }}>
-          <TouchableOpacity
+
+  render(){
+    if (this.state.hasPermission === null) {
+      return <View />;
+    }
+    if (this.state.hasPermission === false) {
+      return <Text>No access to camera</Text>;
+    }else return (
+      <View style={{ flex: 1 }}>
+        <Camera 
+          style={{ flex: 1 }} 
+          type={this.state.type}
+          >
+          <View
             style={{
-              flex: 0.1,
-              alignSelf: 'flex-end',
-              alignItems: 'center',
-            }}
-            onPress={() => {
-              setType(
-                type === Camera.Constants.Type.back
-                  ? Camera.Constants.Type.front
-                  : Camera.Constants.Type.back
-              );
+              flex: 1,
+              backgroundColor: 'transparent',
+              flexDirection: 'row',
             }}>
+            <TouchableOpacity
+              style={{
+                flex: 0.1,
+                alignSelf: 'flex-end',
+                alignItems: 'center',
+              }}
+              onPress={() => {
+                if(this.state.type === Camera.Constants.Type.back){
+                  this.setState({type: Camera.Constants.Type.front});
+                }else{
+                  this.setState({type: Camera.Constants.Type.back})
+                }
+              }}>
+  
+              <AntDesign name="retweet" size={80} style={{marginLeft: 100, width: 100}} color="black" />
+              
+            </TouchableOpacity>
+          </View>
+        </Camera>
+  
+      </View>
+    );
+  }
 
-            <AntDesign name="retweet" size={80} style={{marginLeft: 100, width: 100}} color="black" />
-            
-          </TouchableOpacity>
-        </View>
-      </Camera>
-    </View>
-  );
-};
+}
 
 const styles = StyleSheet.create({
   scrollView: {
