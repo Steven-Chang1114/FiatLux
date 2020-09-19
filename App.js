@@ -29,6 +29,7 @@ import { AntDesign } from '@expo/vector-icons';
 // import { Player } from '@react-native-community/audio-toolkit';
 // import SoundPlayer from 'react-native-sound-player'
 // var Sound = require('react-native-sound');
+import { Audio } from 'expo-av';
 
 // const filename = './audio/welcome.mp3'
 
@@ -45,6 +46,10 @@ class App extends Component {
     (async () => {
         const { status } = await Camera.requestPermissionsAsync();
         this.setState({hasPermission: status === 'granted'});
+        const playbackObject = await Audio.Sound.createAsync(
+              { uri: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+              { shouldPlay: true }
+            )
     })();
   }
 
@@ -54,6 +59,49 @@ class App extends Component {
     this.setState({ faces: obj.faces });
   }
   
+  // playSound = () => {
+  //   (async () => {
+  //     const soundObject = new Audio.Sound();
+  //         try {
+  //           await soundObject.loadAsync(require('./welcome.mp3'));
+  //           await soundObject.setVolumeAsync(0.9)
+  //           await soundObject.playAsync();
+  //           console.log()
+  //           await soundObject.replayAsync();
+            
+  //           // Your sound is playing!
+
+  //           // Don't forget to unload the sound from memory
+  //           // when you are done using the Sound object
+  //           await soundObject.unloadAsync();
+  //           console.log('works')
+  //         } catch (error) {
+  //           // An error occurred!
+  //           console.log(error)
+  //         }
+  //     })();
+  // }
+
+  // playSound = () => {
+  //   const soundObject = new Audio.Sound();
+  //   try {
+  //     soundObject.loadAsync(require('./welcome.mp3'));
+  //     soundObject.setVolumeAsync(0.9)
+  //     soundObject.playAsync();
+  //     console.log()
+  //     soundObject.replayAsync();
+      
+  //     // Your sound is playing!
+
+  //     // Don't forget to unload the sound from memory
+  //     // when you are done using the Sound object
+  //     soundObject.unloadAsync();
+  //     console.log('works')
+  //   } catch (error) {
+  //     // An error occurred!
+  //     console.log(error)
+  //   }
+  // }
 
   // handleFacesDetected(obj){
   //   this.updateFaces(obj)
