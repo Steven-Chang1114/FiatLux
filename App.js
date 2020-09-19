@@ -28,7 +28,7 @@ import { AntDesign } from '@expo/vector-icons';
 
 // import { Player } from '@react-native-community/audio-toolkit';
 // import SoundPlayer from 'react-native-sound-player'
-// var Sound = require('react-native-sound');
+var Sound = require('react-native-sound');
 
 // const filename = './audio/welcome.mp3'
 
