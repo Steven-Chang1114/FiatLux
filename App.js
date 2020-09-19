@@ -7,10 +7,9 @@
  */
 
 import React, { useState, useEffect, Component } from 'react';
+
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
   StatusBar,
@@ -18,21 +17,24 @@ import {
 } from 'react-native';
 
 import {
-  Header,
-  LearnMoreLinks,
   Colors,
-  DebugInstructions,
-  ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
 import { Camera } from 'expo-camera';
 
 import * as FaceDetector from 'expo-face-detector';
 
-import { Ionicons, AntDesign } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
+
+// import { Player } from '@react-native-community/audio-toolkit';
+// import SoundPlayer from 'react-native-sound-player'
+// var Sound = require('react-native-sound');
+
+// const filename = './audio/welcome.mp3'
 
 
 class App extends Component {
+  
   state = {
     hasPermission: null,
     type: Camera.Constants.Type.back,
@@ -48,9 +50,10 @@ class App extends Component {
 
   onFacesDetected = (obj) => {
     if(obj.faces[0])console.log(obj.faces[0].noseBasePosition)
+    console.log();
     this.setState({ faces: obj.faces });
   }
-
+  
 
   // handleFacesDetected(obj){
   //   this.updateFaces(obj)
@@ -87,6 +90,7 @@ class App extends Component {
   }
 
   render(){
+
     if (this.state.hasPermission === null) {
       return <View />;
     }

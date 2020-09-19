@@ -1,27 +1,12 @@
 {
+  "name": "ForBlind",
+  "displayName": "ForBlind",
   "expo": {
     "name": "ForBlind",
+    "slug": "ForBlind",
     "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
     "assetBundlePatterns": [
       "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.forblind.ForBlind"
-    },
-    "android": {
-      "package": "Android.package"
-    },
-    "entryPoint": "node_modules/expo/AppEntry.js"
+    ]
   }
 }
