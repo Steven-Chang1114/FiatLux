@@ -23,6 +23,7 @@ import {
 import { Camera } from 'expo-camera';
 
 import * as FaceDetector from 'expo-face-detector';
+import * as tf from '@tensorflow/tfjs';
 
 import { AntDesign } from '@expo/vector-icons';
 
@@ -32,25 +33,55 @@ import { AntDesign } from '@expo/vector-icons';
 
 // const filename = './audio/welcome.mp3'
 
-
 class App extends Component {
   
   state = {
     hasPermission: null,
     type: Camera.Constants.Type.back,
-    faces: []
+    faces: [],
+    picture: null,
+    model: null,
+    hasMask: false
   }
 
   componentWillMount(){
     (async () => {
         const { status } = await Camera.requestPermissionsAsync();
         this.setState({hasPermission: status === 'granted'});
+
+        this.setState({model: await tf.loadLayersModel('./json_models/model.json')});
     })();
   }
 
+  getRealTimePicture = async () => {
+    if (this.camera) {
+      //console.log(this.state.picture)
+      //console.log(aizoo);
+      this.setState({picture: await this.camera.takePictureAsync()})
+    }
+  };
+
+  // faceAnalysis = async(img) => {
+  //   await faceAnalysisInternal(img, canvasTemp, showBox);
+  //   resultImg.src = canvasTemp.toDataURL();
+  //   resultImg.onload = () => {
+  //       writeToCanvasDownload(resultImg);
+  //       cords = calculateLocationInCanvas(canvas_show.width, 
+  //                                                   canvas_show.height, resultImg.width, resultImg.height);
+  //       // console.log(cords);
+  //       context.clearRect(0, 0, canvas_show.width, canvas_show.height);
+  //       context.drawImage(resultImg , cords[0], cords[1], cords[2], cords[3]);
+  //       // })
+  //     }
+  // }
+
   onFacesDetected = (obj) => {
-    if(obj.faces[0])console.log(obj.faces[0].noseBasePosition)
-    console.log();
+    this.getRealTimePicture()
+    // this.faceAnalysis(this.state.picture);
+    //     intervalID = setTimeout(() => {
+    //         this.faceVideoAnalysis(this.state.picture);
+    // });
+    //if(obj.faces[0])console.log(obj.faces[0].noseBasePosition)
     this.setState({ faces: obj.faces });
   }
   
@@ -98,7 +129,10 @@ class App extends Component {
       return <Text>No access to camera</Text>;
     }else return (
       <View style={{ flex: 1 }}>
-        <Camera 
+        <Camera
+          ref={ref => {
+            this.camera = ref;
+          }}
           style={{ flex: 1 }} 
           type={this.state.type}
           onFacesDetected={this.onFacesDetected}
