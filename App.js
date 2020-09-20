@@ -86,8 +86,22 @@ class App extends Component {
       // console.ignoredYellowBox = ['Warning: Each', 'Warning: Failed'];
       //console.log(photo.uri)
       //Do the api call
+      
+      console.log(photo.base64);
 
-
+      postImage = (async (photo) => {
+        let user = await fetch('', {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }, 
+            body: JSON.stringify({uri: photo.uri, base64: photo.base64})
+        })
+        let json = await response.json()
+        json = json.user
+        return json
+      })(photo);
 
     }, 1000)
   }
