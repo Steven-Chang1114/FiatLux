@@ -31,8 +31,11 @@ import { AntDesign } from '@expo/vector-icons';
 // import { Player } from '@react-native-community/audio-toolkit';
 // import SoundPlayer from 'react-native-sound-player'
 // var Sound = require('react-native-sound');
+import { Audio } from 'expo-av';
 
 // const filename = './audio/welcome.mp3'
+const soundObject = new Audio.Sound();
+
 
 class App extends Component {
   
@@ -41,7 +44,8 @@ class App extends Component {
     type: Camera.Constants.Type.back,
     faces: [],
     picture: null,
-    hasMask: false
+    hasMask: false,
+    audioPlaying: true
   }
 
   model
@@ -51,18 +55,62 @@ class App extends Component {
         const { status } = await Camera.requestPermissionsAsync();
         //Get permission
         this.setState({hasPermission: status === 'granted'});
+        await soundObject.loadAsync(require('./watchout.mp3'));
+        const playback = await Audio.Sound.createAsync(
+              require('./welcome.mp3'),
+              { shouldPlay: true }
+            )
     })();
   }
 
-
-  onFacesDetected = async (obj) => {
-    //Take picture in realtime
-    const data = await this.camera.takePictureAsync();
-    const picture = data.uri;
-    //console.log(this.model)
-    //const results = await this.model.detect(picture);
+  onFacesDetected = (obj) => {
+    if(obj.faces[0])console.log(obj.faces[0].noseBasePosition)
+    this.setState({ faces: obj.faces });
+    //console.log(this.state.audioPlaying);
+    if (this.state.audioPlaying) {
+      //console.log('play sound')
+      this.setState({audioPlaying: false});
+      this.playSound();
+    }
   }
   
+  // playSound = () => {
+  //   (async () => {
+  //     await soundObject.playAsync();
+  //     await soundObject.replayAsync();
+  //   })();
+  // }
+
+  playSound = () => {
+      //console.log(this.state.audioPlaying);
+      soundObject.playAsync();
+      soundObject.replayAsync();
+      setTimeout(() => {
+        this.setState({audioPlaying: true});
+        }, 3000);
+      //console.log(this.state.audioPlaying);
+  }
+
+  // playSound = () => {
+  //   const soundObject = new Audio.Sound();
+  //   try {
+  //     soundObject.loadAsync(require('./welcome.mp3'));
+  //     soundObject.setVolumeAsync(0.9)
+  //     soundObject.playAsync();
+  //     console.log()
+  //     soundObject.replayAsync();
+      
+  //     // Your sound is playing!
+
+  //     // Don't forget to unload the sound from memory
+  //     // when you are done using the Sound object
+  //     soundObject.unloadAsync();
+  //     console.log('works')
+  //   } catch (error) {
+  //     // An error occurred!
+  //     console.log(error)
+  //   }
+  // }
 
   // handleFacesDetected(obj){
   //   this.updateFaces(obj)
