@@ -32,22 +32,24 @@ import { AntDesign } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 
 // const filename = './audio/welcome.mp3'
-
+const soundObject = new Audio.Sound();
 
 class App extends Component {
   
   state = {
     hasPermission: null,
     type: Camera.Constants.Type.back,
-    faces: []
+    faces: [],
+    audioPlaying: true
   }
 
   componentWillMount(){
     (async () => {
         const { status } = await Camera.requestPermissionsAsync();
         this.setState({hasPermission: status === 'granted'});
-        const playbackObject = await Audio.Sound.createAsync(
-              { uri: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+        await soundObject.loadAsync(require('./watchout.mp3'));
+        const playback = await Audio.Sound.createAsync(
+              require('./welcome.mp3'),
               { shouldPlay: true }
             )
     })();
@@ -55,32 +57,31 @@ class App extends Component {
 
   onFacesDetected = (obj) => {
     if(obj.faces[0])console.log(obj.faces[0].noseBasePosition)
-    console.log();
     this.setState({ faces: obj.faces });
+    console.log(this.state.audioPlaying);
+    if (this.state.audioPlaying) {
+      console.log('play sound')
+      this.setState({audioPlaying: false});
+      this.playSound();
+    }
   }
   
   // playSound = () => {
   //   (async () => {
-  //     const soundObject = new Audio.Sound();
-  //         try {
-  //           await soundObject.loadAsync(require('./welcome.mp3'));
-  //           await soundObject.setVolumeAsync(0.9)
-  //           await soundObject.playAsync();
-  //           console.log()
-  //           await soundObject.replayAsync();
-            
-  //           // Your sound is playing!
-
-  //           // Don't forget to unload the sound from memory
-  //           // when you are done using the Sound object
-  //           await soundObject.unloadAsync();
-  //           console.log('works')
-  //         } catch (error) {
-  //           // An error occurred!
-  //           console.log(error)
-  //         }
-  //     })();
+  //     await soundObject.playAsync();
+  //     await soundObject.replayAsync();
+  //   })();
   // }
+
+  playSound = () => {
+      console.log(this.state.audioPlaying);
+      soundObject.playAsync();
+      soundObject.replayAsync();
+      setTimeout(() => {
+        this.setState({audioPlaying: true});
+        }, 3000);
+      console.log(this.state.audioPlaying);
+  }
 
   // playSound = () => {
   //   const soundObject = new Audio.Sound();
