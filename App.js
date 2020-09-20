@@ -45,7 +45,9 @@ class App extends Component {
     faces: [],
     picture: null,
     hasMask: false,
-    audioPlaying: true
+    audioPlaying: true,
+    tooclose: false,
+    dist: 0,
   }
 
   model
@@ -56,6 +58,7 @@ class App extends Component {
         //Get permission
         this.setState({hasPermission: status === 'granted'});
         await soundObject.loadAsync(require('./watchout.mp3'));
+        Audio.setAudioModeAsync({playsInSilentModeIOS : true})
         const playback = await Audio.Sound.createAsync(
               require('./welcome.mp3'),
               { shouldPlay: true }
@@ -66,26 +69,28 @@ class App extends Component {
   onFacesDetected = (obj) => {
     //if(obj.faces[0])console.log(obj.faces[0].noseBasePosition)
     this.setState({ faces: obj.faces });
-    if (this.state.audioPlaying) {
+    if (this.state.dist > 5000 && this.state.audioPlaying) {
       this.setState({audioPlaying: false});
       this.playSound();
     }
 
     setTimeout(async () => {
       let photo = await this.camera.takePictureAsync({base64: true});
-      console.ignoredYellowBox = ['Warning: Each', 'Warning: Failed'];
+      // console.ignoredYellowBox = ['Warning: Each', 'Warning: Failed'];
       //console.log(photo.uri)
       //Do the api call
 
 
     }, 1000)
   }
-  
-  // playSound = () => {
-  //   (async () => {
-  //     await soundObject.playAsync();
-  //     await soundObject.replayAsync();
-  //   })();
+
+  // setDistance = (dist) => {
+  //   if (dist > 5000) {
+  //     this.setState({ tooclose: false });
+  //   } else {
+  //     this.setState({ tooclose: true });
+  //   }
+    
   // }
 
   playSound = () => {
@@ -96,43 +101,20 @@ class App extends Component {
         }, 4000);
   }
 
-  // playSound = () => {
-  //   const soundObject = new Audio.Sound();
-  //   try {
-  //     soundObject.loadAsync(require('./welcome.mp3'));
-  //     soundObject.setVolumeAsync(0.9)
-  //     soundObject.playAsync();
-  //     console.log()
-  //     soundObject.replayAsync();
-      
-  //     // Your sound is playing!
-
-  //     // Don't forget to unload the sound from memory
-  //     // when you are done using the Sound object
-  //     soundObject.unloadAsync();
-  //     console.log('works')
-  //   } catch (error) {
-  //     // An error occurred!
-  //     console.log(error)
-  //   }
-  // }
-
-  // handleFacesDetected(obj){
-  //   this.updateFaces(obj)
-  //   console.log(obj);
-  // }
-
   renderFaces = () => 
   <View style={styles.facesContainer} pointerEvents="none">
     {this.state.faces.map(this.renderFace)}
   </View>
 
-  renderFace({ bounds, faceID, rollAngle, yawAngle,leftCheekPosition,leftMouthPosition, noseBasePosition, rightCheekPosition, rightMouthPosition }) {
+  renderFace = ({ bounds, faceID, rollAngle, yawAngle,leftCheekPosition,leftMouthPosition, noseBasePosition, rightCheekPosition, rightMouthPosition }) => {
     const size = bounds.size.height * bounds.size.width;
+    setTimeout(() => {
+      this.setState({ dist: size });
+      }, 1000);
     let styleOpt;
     if(size > 5000){
       styleOpt = styles.face
-    }else{
+    } else {
       styleOpt = styles.face_warning
     }
 
