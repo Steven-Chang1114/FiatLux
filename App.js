@@ -47,7 +47,7 @@ class App extends Component {
         const { status } = await Camera.requestPermissionsAsync();
         this.setState({hasPermission: status === 'granted'});
         const playbackObject = await Audio.Sound.createAsync(
-              { uri: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+              require('./welcome.mp3'),
               { shouldPlay: true }
             )
     })();
