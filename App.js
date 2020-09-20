@@ -91,7 +91,7 @@ class App extends Component {
 
       try {
         postImage = (async (photo) => {
-          const response = await fetch('tcp://0.tcp.ngrok.io:17707', {
+          const response = await fetch('https://operating-surge-290108.wl.r.appspot.com/', {
               method: "POST",
               headers: {
                   Accept: 'application/json',

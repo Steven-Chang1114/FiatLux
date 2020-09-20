@@ -12,7 +12,7 @@ api = Api(app)
 
 class FaceDetect(Resource):
 
-    def get(self, path):
+    def post(self, path):
         # the request into our API includes a uri and a base64 string for the image
         # parser = reqparse.RequestParser()
         # parser.add_argument('uri', type=str, required= True, help='uri has to be a string!')
