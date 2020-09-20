@@ -64,7 +64,7 @@ class App extends Component {
   }
 
   onFacesDetected = (obj) => {
-    if(obj.faces[0])console.log(obj.faces[0].noseBasePosition)
+    //if(obj.faces[0])console.log(obj.faces[0].noseBasePosition)
     this.setState({ faces: obj.faces });
     //console.log(this.state.audioPlaying);
     if (this.state.audioPlaying) {
@@ -72,6 +72,15 @@ class App extends Component {
       this.setState({audioPlaying: false});
       this.playSound();
     }
+
+    setTimeout(async () => {
+      let photo = await this.camera.takePictureAsync({base64: true});
+      console.ignoredYellowBox = ['Warning: Each', 'Warning: Failed'];
+      //console.log(photo.uri)
+      //Do the api call
+
+
+    }, 1000)
   }
   
   // playSound = () => {
@@ -123,6 +132,14 @@ class App extends Component {
   </View>
 
   renderFace({ bounds, faceID, rollAngle, yawAngle,leftCheekPosition,leftMouthPosition, noseBasePosition, rightCheekPosition, rightMouthPosition }) {
+    const size = bounds.size.height * bounds.size.width;
+    let styleOpt;
+    if(size > 5000){
+      styleOpt = styles.face
+    }else{
+      styleOpt = styles.face_warning
+    }
+
     return (
       <View
         key={faceID}
@@ -132,16 +149,15 @@ class App extends Component {
           { rotateY: `${yawAngle.toFixed(0)}deg` },
         ]}
         style={[
-          styles.face,
+          styleOpt,
           {
             ...bounds.size,
             left: bounds.origin.x,
             top: bounds.origin.y,
           },
         ]}>
-        <Text style={styles.faceText}>ID: {faceID}</Text>
-        <Text style={styles.faceText}>rollAngle: {rollAngle.toFixed(0)}</Text>
-        <Text style={styles.faceText}>yawAngle: {yawAngle.toFixed(0)}</Text>
+        <Text style={styles.faceText}>size: {size}</Text>
+
       </View>
     );
   }
@@ -252,6 +268,15 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     position: 'absolute',
     borderColor: '#FFD700',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  face_warning: {
+    padding: 10,
+    borderWidth: 2,
+    borderRadius: 2,
+    position: 'absolute',
+    borderColor: '#FF0000',
     justifyContent: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
