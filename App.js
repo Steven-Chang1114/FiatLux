@@ -32,7 +32,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 
 // const filename = './audio/welcome.mp3'
-
+const soundObject = new Audio.Sound();
 
 class App extends Component {
   
@@ -46,7 +46,8 @@ class App extends Component {
     (async () => {
         const { status } = await Camera.requestPermissionsAsync();
         this.setState({hasPermission: status === 'granted'});
-        const playbackObject = await Audio.Sound.createAsync(
+        await soundObject.loadAsync(require('./watchout.mp3'));
+        const playback = await Audio.Sound.createAsync(
               require('./welcome.mp3'),
               { shouldPlay: true }
             )
@@ -57,30 +58,22 @@ class App extends Component {
     if(obj.faces[0])console.log(obj.faces[0].noseBasePosition)
     console.log();
     this.setState({ faces: obj.faces });
+    this.playSound();
   }
   
   // playSound = () => {
   //   (async () => {
-  //     const soundObject = new Audio.Sound();
-  //         try {
-  //           await soundObject.loadAsync(require('./welcome.mp3'));
-  //           await soundObject.setVolumeAsync(0.9)
-  //           await soundObject.playAsync();
-  //           console.log()
-  //           await soundObject.replayAsync();
-            
-  //           // Your sound is playing!
-
-  //           // Don't forget to unload the sound from memory
-  //           // when you are done using the Sound object
-  //           await soundObject.unloadAsync();
-  //           console.log('works')
-  //         } catch (error) {
-  //           // An error occurred!
-  //           console.log(error)
-  //         }
-  //     })();
+  //     await soundObject.playAsync();
+  //     await soundObject.replayAsync();
+  //   })();
   // }
+
+  playSound = () => {
+      soundObject.playAsync();
+      setTimeout(() => {
+        soundObject.replayAsync();
+        }, 3000);
+  }
 
   // playSound = () => {
   //   const soundObject = new Audio.Sound();
