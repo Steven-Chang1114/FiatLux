@@ -1,4 +1,4 @@
-# 4Blind
+# FiatLux
 
 To run the app on your phone, follow the following steps:
 
