@@ -58,9 +58,7 @@ class App extends Component {
   onFacesDetected = (obj) => {
     if(obj.faces[0])console.log(obj.faces[0].noseBasePosition)
     this.setState({ faces: obj.faces });
-    console.log(this.state.audioPlaying);
     if (this.state.audioPlaying) {
-      console.log('play sound')
       this.setState({audioPlaying: false});
       this.playSound();
     }
@@ -74,13 +72,11 @@ class App extends Component {
   // }
 
   playSound = () => {
-      console.log(this.state.audioPlaying);
       soundObject.playAsync();
       soundObject.replayAsync();
       setTimeout(() => {
         this.setState({audioPlaying: true});
-        }, 3000);
-      console.log(this.state.audioPlaying);
+        }, 4000);
   }
 
   // playSound = () => {
