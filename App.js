@@ -23,8 +23,6 @@ import {
 import { Camera } from 'expo-camera';
 
 import * as FaceDetector from 'expo-face-detector';
-const tf = require("@tensorflow/tfjs");
-import * as mobilenet from '@tensorflow-models/mobilenet'
 
 //import { bundleResourceIO } from '@tensorflow/tfjs-react-native';
 
@@ -43,9 +41,7 @@ class App extends Component {
     type: Camera.Constants.Type.back,
     faces: [],
     picture: null,
-    hasMask: false,
-    isTfReady: false,
-    isModelReady: false
+    hasMask: false
   }
 
   model
@@ -58,40 +54,13 @@ class App extends Component {
     })();
   }
 
-  async componentDidMount() {
-    await tf.ready()
-    this.setState({
-      isTfReady: true
-    })
-    //Output in Expo console
-    console.log(this.state.isTfReady)
-
-    //console.log(tf);
-    //this.model = await mobilenet.load()
-
-    this.model = await tf.loadLayersModel('https://file.aizoo.com/model/cv/mask-detection/float/model.json');
-    this.setState({ isModelReady: true })
-  }
-
-  faceAnalysis = async (img) => {
-    //console.log(img.uri)
-    console.log(this.model)
-    //let results = await this.model.predict(img.uri);
-    //await faceAnalysisInternal(img, canvasTemp, showBox);
-    //console.log(results);
-        // })
-  }
 
   onFacesDetected = async (obj) => {
     //Take picture in realtime
-
     const data = await this.camera.takePictureAsync();
     const picture = data.uri;
-
+    //console.log(this.model)
     //const results = await this.model.detect(picture);
-    console.log(this.model);
-    //Record the face info
-    //this.setState({ faces: obj.faces });
   }
   
 
