@@ -24,6 +24,8 @@ import { Camera } from 'expo-camera';
 
 import * as FaceDetector from 'expo-face-detector';
 
+//import { bundleResourceIO } from '@tensorflow/tfjs-react-native';
+
 import { AntDesign } from '@expo/vector-icons';
 
 // import { Player } from '@react-native-community/audio-toolkit';
@@ -34,18 +36,24 @@ import { Audio } from 'expo-av';
 // const filename = './audio/welcome.mp3'
 const soundObject = new Audio.Sound();
 
+
 class App extends Component {
   
   state = {
     hasPermission: null,
     type: Camera.Constants.Type.back,
     faces: [],
+    picture: null,
+    hasMask: false,
     audioPlaying: true
   }
+
+  model
 
   componentWillMount(){
     (async () => {
         const { status } = await Camera.requestPermissionsAsync();
+        //Get permission
         this.setState({hasPermission: status === 'granted'});
         await soundObject.loadAsync(require('./watchout.mp3'));
         const playback = await Audio.Sound.createAsync(
@@ -56,14 +64,23 @@ class App extends Component {
   }
 
   onFacesDetected = (obj) => {
-    if(obj.faces[0])console.log(obj.faces[0].noseBasePosition)
+    //if(obj.faces[0])console.log(obj.faces[0].noseBasePosition)
     this.setState({ faces: obj.faces });
-    console.log(this.state.audioPlaying);
+    //console.log(this.state.audioPlaying);
     if (this.state.audioPlaying) {
-      console.log('play sound')
+      //console.log('play sound')
       this.setState({audioPlaying: false});
       this.playSound();
     }
+
+    setTimeout(async () => {
+      let photo = await this.camera.takePictureAsync({base64: true});
+      console.ignoredYellowBox = ['Warning: Each', 'Warning: Failed'];
+      //console.log(photo.uri)
+      //Do the api call
+
+
+    }, 1000)
   }
   
   // playSound = () => {
@@ -74,13 +91,13 @@ class App extends Component {
   // }
 
   playSound = () => {
-      console.log(this.state.audioPlaying);
+      //console.log(this.state.audioPlaying);
       soundObject.playAsync();
       soundObject.replayAsync();
       setTimeout(() => {
         this.setState({audioPlaying: true});
         }, 3000);
-      console.log(this.state.audioPlaying);
+      //console.log(this.state.audioPlaying);
   }
 
   // playSound = () => {
@@ -115,6 +132,14 @@ class App extends Component {
   </View>
 
   renderFace({ bounds, faceID, rollAngle, yawAngle,leftCheekPosition,leftMouthPosition, noseBasePosition, rightCheekPosition, rightMouthPosition }) {
+    const size = bounds.size.height * bounds.size.width;
+    let styleOpt;
+    if(size > 5000){
+      styleOpt = styles.face
+    }else{
+      styleOpt = styles.face_warning
+    }
+
     return (
       <View
         key={faceID}
@@ -124,16 +149,15 @@ class App extends Component {
           { rotateY: `${yawAngle.toFixed(0)}deg` },
         ]}
         style={[
-          styles.face,
+          styleOpt,
           {
             ...bounds.size,
             left: bounds.origin.x,
             top: bounds.origin.y,
           },
         ]}>
-        <Text style={styles.faceText}>ID: {faceID}</Text>
-        <Text style={styles.faceText}>rollAngle: {rollAngle.toFixed(0)}</Text>
-        <Text style={styles.faceText}>yawAngle: {yawAngle.toFixed(0)}</Text>
+        <Text style={styles.faceText}>size: {size}</Text>
+
       </View>
     );
   }
@@ -147,7 +171,10 @@ class App extends Component {
       return <Text>No access to camera</Text>;
     }else return (
       <View style={{ flex: 1 }}>
-        <Camera 
+        <Camera
+          ref={ref => {
+            this.camera = ref;
+          }}
           style={{ flex: 1 }} 
           type={this.state.type}
           onFacesDetected={this.onFacesDetected}
@@ -241,6 +268,15 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     position: 'absolute',
     borderColor: '#FFD700',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  face_warning: {
+    padding: 10,
+    borderWidth: 2,
+    borderRadius: 2,
+    position: 'absolute',
+    borderColor: '#FF0000',
     justifyContent: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
