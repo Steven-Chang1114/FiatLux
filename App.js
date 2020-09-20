@@ -39,7 +39,8 @@ class App extends Component {
   state = {
     hasPermission: null,
     type: Camera.Constants.Type.back,
-    faces: []
+    faces: [],
+    audioPlaying: true
   }
 
   componentWillMount(){
@@ -56,9 +57,13 @@ class App extends Component {
 
   onFacesDetected = (obj) => {
     if(obj.faces[0])console.log(obj.faces[0].noseBasePosition)
-    console.log();
     this.setState({ faces: obj.faces });
-    this.playSound();
+    console.log(this.state.audioPlaying);
+    if (this.state.audioPlaying) {
+      console.log('play sound')
+      this.setState({audioPlaying: false});
+      this.playSound();
+    }
   }
   
   // playSound = () => {
@@ -69,10 +74,13 @@ class App extends Component {
   // }
 
   playSound = () => {
+      console.log(this.state.audioPlaying);
       soundObject.playAsync();
+      soundObject.replayAsync();
       setTimeout(() => {
-        soundObject.replayAsync();
+        this.setState({audioPlaying: true});
         }, 3000);
+      console.log(this.state.audioPlaying);
   }
 
   // playSound = () => {
