@@ -149,14 +149,8 @@ class App extends Component {
       this.setState({ dist: size });
       }, 1000);
     let styleOpt;
-<<<<<<< HEAD
-    if(size > 5000 && !this.hasFaceMask){
-=======
     if(size < 5000){
       styleOpt = styles.face
-    } else {
->>>>>>> master
-      styleOpt = styles.face_warning
     } else if (this.hasFaceMask) {
       styleOpt = styles.face_success
     } else {
