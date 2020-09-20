@@ -24,6 +24,22 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+<<<<<<< HEAD
+=======
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>https://operating-surge-290108.wl.r.appspot.com/</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
+>>>>>>> master
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>UILaunchStoryboardName</key>
@@ -43,6 +59,7 @@
   <key>UIStatusBarStyle</key>
   <string>UIStatusBarStyleDefault</string>
   <key>NSAppTransportSecurity</key>
+<<<<<<< HEAD
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
@@ -50,5 +67,24 @@
 
 
 
+=======
+<dict>
+  <key>NSExceptionDomains</key>
+  <dict>
+    <key>https://operating-surge-290108.wl.r.appspot.com/</key>
+    <dict>
+      <!--Include to allow subdomains-->
+      <key>NSIncludesSubdomains</key>
+      <true/>
+      <!--Include to allow HTTP requests-->
+      <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+      <true/>
+      <!--Include to specify minimum TLS version-->
+      <key>NSTemporaryExceptionMinimumTLSVersion</key>
+      <string>TLSv1.1</string>
+    </dict>
+  </dict>
+</dict>
+>>>>>>> master
 </dict>
 </plist>
