@@ -27,6 +27,7 @@ import * as FaceDetector from 'expo-face-detector';
 //import { bundleResourceIO } from '@tensorflow/tfjs-react-native';
 
 import { AntDesign } from '@expo/vector-icons';
+//import axios from "axios"
 
 // import { Player } from '@react-native-community/audio-toolkit';
 // import SoundPlayer from 'react-native-sound-player'
@@ -41,7 +42,7 @@ class App extends Component {
   
   state = {
     hasPermission: null,
-    type: Camera.Constants.Type.back,
+    type: Camera.Constants.Type.front,
     faces: [],
     picture: null,
     hasMask: false,
@@ -51,8 +52,10 @@ class App extends Component {
   }
 
   model
+  hasFaceMask = false
 
   componentWillMount(){
+    console.disableYellowBox = true;
     (async () => {
         const { status } = await Camera.requestPermissionsAsync();
         // Get permission
@@ -70,6 +73,7 @@ class App extends Component {
     })();
   }
 
+
   onFacesDetected = (obj) => {
     //if(obj.faces[0])console.log(obj.faces[0].noseBasePosition)
     this.setState({ faces: obj.faces });
@@ -83,29 +87,43 @@ class App extends Component {
     // send pic to backend to process
     setTimeout(async () => {
       let photo = await this.camera.takePictureAsync({base64: true});
+      console.log(this.hasFaceMask)
       // console.ignoredYellowBox = ['Warning: Each', 'Warning: Failed'];
       //console.log(photo.uri)
       //Do the api call
       
-      // console.log(photo.base64);
+      //console.log(photo.base64);
 
-      try {
-        postImage = (async (photo) => {
-          const response = await fetch('https://operating-surge-290108.wl.r.appspot.com/', {
-              method: "POST",
-              headers: {
-                  Accept: 'application/json',
-                  'Content-Type': 'application/json'
-              }, 
-              body: JSON.stringify({uri: photo.uri})
-          })
-          let json = await response.json()
-          return json
-        })(photo);
-      } catch (e) {
-        console.log(e)
-      }
-      
+      postImage = ((photo) => {
+
+        return fetch('http://localhost:5000/path', {
+          method: "POST",
+          headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+          }, 
+          body: JSON.stringify({uri: photo.uri, base64: photo.base64})
+      }).then(response => {
+        response.json();
+      }).then(resJSON => {
+        this.hasFaceMask = resJSON['class id'] == 1 ? false : true
+        //return resJSON
+      }).catch(error => {
+        console.log("FANCY")
+        console.log(error)
+      })
+
+        // let response = await fetch('http://127.0.0.1:5000/', {
+        //     method: "POST",
+        //     headers: {
+        //         Accept: 'application/json',
+        //         'Content-Type': 'application/json'
+        //     }, 
+        //     body: JSON.stringify({uri: photo.uri, base64: photo.base64})
+        // })
+        // let json = await response.json()
+        // return json
+      });
 
     }, 1000)
   }
@@ -133,8 +151,10 @@ class App extends Component {
     let styleOpt;
     if(size < 5000){
       styleOpt = styles.face
+    } else if (this.hasFaceMask) {
+      styleOpt = styles.face_success
     } else {
-      styleOpt = styles.face_warning
+      styleOpt = styles.face
     }
 
     return (
@@ -153,7 +173,8 @@ class App extends Component {
             top: bounds.origin.y,
           },
         ]}>
-        <Text style={styles.faceText}>size: {size}</Text>
+        <Text style={styles.faceText}>hasMask: {this.hasFaceMask ? "Yes" : "No"}</Text>
+        <Text style={styles.faceText}>Close: {size > 5000 ? "Yes" : "No"}</Text>
 
       </View>
     );
@@ -274,6 +295,15 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     position: 'absolute',
     borderColor: '#FF0000',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  face_success: {
+    padding: 10,
+    borderWidth: 2,
+    borderRadius: 2,
+    position: 'absolute',
+    borderColor: '#00FF00',
     justifyContent: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
