@@ -55,10 +55,14 @@ class App extends Component {
   componentWillMount(){
     (async () => {
         const { status } = await Camera.requestPermissionsAsync();
-        //Get permission
+        // Get permission
         this.setState({hasPermission: status === 'granted'});
-        await soundObject.loadAsync(require('./watchout.mp3'));
+
+        // Load audio for welcome screen and warning
+        await soundObject.loadAsync(require('./tooclose.mp3'));
         Audio.setAudioModeAsync({playsInSilentModeIOS : true})
+
+        // Welcome audio
         const playback = await Audio.Sound.createAsync(
               require('./welcome.mp3'),
               { shouldPlay: true }
@@ -69,11 +73,14 @@ class App extends Component {
   onFacesDetected = (obj) => {
     //if(obj.faces[0])console.log(obj.faces[0].noseBasePosition)
     this.setState({ faces: obj.faces });
+
+    // if too close, play the audio
     if (this.state.dist > 5000 && this.state.audioPlaying) {
       this.setState({audioPlaying: false});
       this.playSound();
     }
 
+    // send pic to backend to process
     setTimeout(async () => {
       let photo = await this.camera.takePictureAsync({base64: true});
       // console.ignoredYellowBox = ['Warning: Each', 'Warning: Failed'];
@@ -81,17 +88,10 @@ class App extends Component {
       //Do the api call
 
 
+
     }, 1000)
   }
 
-  // setDistance = (dist) => {
-  //   if (dist > 5000) {
-  //     this.setState({ tooclose: false });
-  //   } else {
-  //     this.setState({ tooclose: true });
-  //   }
-    
-  // }
 
   playSound = () => {
       soundObject.playAsync();
@@ -106,8 +106,9 @@ class App extends Component {
     {this.state.faces.map(this.renderFace)}
   </View>
 
+
   renderFace = ({ bounds, faceID, rollAngle, yawAngle,leftCheekPosition,leftMouthPosition, noseBasePosition, rightCheekPosition, rightMouthPosition }) => {
-    const size = bounds.size.height * bounds.size.width;
+    const size = bounds.size.height * bounds.size.width; // compute face size to determine approximate distance
     setTimeout(() => {
       this.setState({ dist: size });
       }, 1000);
