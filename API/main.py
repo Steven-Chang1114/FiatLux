@@ -6,6 +6,10 @@ from pytorch_infer import detectFace
 app = Flask(__name__)
 api = Api(app)
 
+# @app.route("/")
+# def hello_world():
+#     return "<p>Hello, World!</p>"
+
 class FaceDetect(Resource):
 
     def get(self, path):
@@ -23,6 +27,11 @@ class FaceDetect(Resource):
         # # check
         # if (not succeededPath):
         #     raise Exception('decoding failed, image not saved')
+
+        print(path)
+        print("It gets here ===============================================")
+        print("It gets here ===============================================")
+        print("It gets here ===============================================")
 
         output = detectFace(path)
 
@@ -66,7 +75,7 @@ class FaceDetect(Resource):
     #
     #     return sendBack
 
-api.add_resource(FaceDetect, '/path/<string:path>')
+api.add_resource(FaceDetect, '/')
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run(host='127.0.0.1', port=8080, debug=True)

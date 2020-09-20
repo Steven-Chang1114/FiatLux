@@ -87,21 +87,25 @@ class App extends Component {
       //console.log(photo.uri)
       //Do the api call
       
-      console.log(photo.base64);
+      // console.log(photo.base64);
 
-      postImage = (async (photo) => {
-        let user = await fetch('', {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }, 
-            body: JSON.stringify({uri: photo.uri, base64: photo.base64})
-        })
-        let json = await response.json()
-        json = json.user
-        return json
-      })(photo);
+      try {
+        postImage = (async (photo) => {
+          const response = await fetch('tcp://0.tcp.ngrok.io:17707', {
+              method: "POST",
+              headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json'
+              }, 
+              body: JSON.stringify({uri: photo.uri})
+          })
+          let json = await response.json()
+          return json
+        })(photo);
+      } catch (e) {
+        console.log(e)
+      }
+      
 
     }, 1000)
   }
@@ -127,7 +131,7 @@ class App extends Component {
       this.setState({ dist: size });
       }, 1000);
     let styleOpt;
-    if(size > 5000){
+    if(size < 5000){
       styleOpt = styles.face
     } else {
       styleOpt = styles.face_warning
