@@ -23,7 +23,9 @@ import {
 import { Camera } from 'expo-camera';
 
 import * as FaceDetector from 'expo-face-detector';
-import * as tf from '@tensorflow/tfjs';
+const tf = require("@tensorflow/tfjs");
+import * as mobilenet from '@tensorflow-models/mobilenet'
+
 //import { bundleResourceIO } from '@tensorflow/tfjs-react-native';
 
 import { AntDesign } from '@expo/vector-icons';
@@ -41,8 +43,12 @@ class App extends Component {
     type: Camera.Constants.Type.back,
     faces: [],
     picture: null,
-    hasMask: false
+    hasMask: false,
+    isTfReady: false,
+    isModelReady: false
   }
+
+  model
 
   componentWillMount(){
     (async () => {
@@ -52,43 +58,40 @@ class App extends Component {
     })();
   }
 
-  // setUpModel = async() => {
-  //   await tf.ready();
-  //   const modelJson = require('./tfjs-models/model.json');
-  //   //const modelWeights = require('./tfjs-models/group1-shard1of1.bin');
-  //   const model = await tf.loadLayersModel('./tfjs-models/model.json');
-  //   console.log(model)
-  // }
+  async componentDidMount() {
+    await tf.ready()
+    this.setState({
+      isTfReady: true
+    })
+    //Output in Expo console
+    console.log(this.state.isTfReady)
 
-  getRealTimePicture = async () => {
-    if (this.camera) {
-      //console.log(this.state.picture)
-      //console.log(aizoo);
-      const data = await this.camera.takePictureAsync();
-      this.setState({picture: data.uri});
+    //console.log(tf);
+    //this.model = await mobilenet.load()
 
-    }
-  };
+    this.model = await tf.loadLayersModel('https://file.aizoo.com/model/cv/mask-detection/float/model.json');
+    this.setState({ isModelReady: true })
+  }
 
-  // faceAnalysis = async(img) => {
-  //   //console.log(img.uri)
-  //   console.log(this.model)
-  //   //let results = await this.model.predict(img.uri);
-  //   //await faceAnalysisInternal(img, canvasTemp, showBox);
-  //   //console.log(results);
-  //       // })
-  // }
+  faceAnalysis = async (img) => {
+    //console.log(img.uri)
+    console.log(this.model)
+    //let results = await this.model.predict(img.uri);
+    //await faceAnalysisInternal(img, canvasTemp, showBox);
+    //console.log(results);
+        // })
+  }
 
-  onFacesDetected = (obj) => {
+  onFacesDetected = async (obj) => {
     //Take picture in realtime
-    this.getRealTimePicture()
+
+    const data = await this.camera.takePictureAsync();
+    const picture = data.uri;
+
+    //const results = await this.model.detect(picture);
+    console.log(this.model);
     //Record the face info
-    this.setState({ faces: obj.faces });
-    //this.setUpModel();
-    //Analyze the picture
-    //this.faceAnalysis(this.state.picture);
-    //if(obj.faces[0])console.log(obj.faces[0].noseBasePosition)
-    
+    //this.setState({ faces: obj.faces });
   }
   
 
