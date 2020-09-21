@@ -2,8 +2,10 @@
 
 To run the app on your phone, follow the following steps:
 
-On your phone:
+## On your phone:
 Make sure you installed "Expo" in app store.
+
+## Usage
 
 On PC
 1. In Terminal, cd to this folder.
@@ -12,7 +14,7 @@ On PC
 4. You will see a web pops up. Use your camera to scan the QR code at lower-right corner. (aim your camera to it until a window pops up on the top)
 5. Wait till the app opens (first time takes about 1 min)
 
-Troubleshoot:
+## Troubleshoot:
 
 If have a red screen with big ass long error message, I recommend to try these commands.
 
