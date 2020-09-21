@@ -24,3 +24,10 @@ If have a red screen with big ass long error message, I recommend to try these c
 
 Then redo expo start.
 
+## Demo
+
+#### No mask and the distance is within 6 feet
+<img src="https://github.com/Steven-Chang1114/FiatLux/blob/master/demo/noMask.jpeg" width="200" height="400">
+
+#### Has mask on
+<img src="https://github.com/Steven-Chang1114/FiatLux/blob/master/demo/hasMask.jpeg" width="200" height="400">
