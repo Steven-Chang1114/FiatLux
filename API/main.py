@@ -6,16 +6,10 @@ from pytorch_infer import detectFace
 app = Flask(__name__)
 api = Api(app)
 
-<<<<<<< HEAD:API/app.py
 
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
-=======
 # @app.route("/")
 # def hello_world():
 #     return "<p>Hello, World!</p>"
->>>>>>> master:API/main.py
 
 class FaceDetect(Resource):
 

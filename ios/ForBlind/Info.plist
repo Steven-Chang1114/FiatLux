@@ -24,8 +24,6 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-<<<<<<< HEAD
-=======
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
@@ -39,7 +37,6 @@
 			</dict>
 		</dict>
 	</dict>
->>>>>>> master
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>UILaunchStoryboardName</key>
@@ -59,15 +56,6 @@
   <key>UIStatusBarStyle</key>
   <string>UIStatusBarStyleDefault</string>
   <key>NSAppTransportSecurity</key>
-<<<<<<< HEAD
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
-
-
-
-=======
 <dict>
   <key>NSExceptionDomains</key>
   <dict>
@@ -85,6 +73,5 @@
     </dict>
   </dict>
 </dict>
->>>>>>> master
 </dict>
 </plist>
